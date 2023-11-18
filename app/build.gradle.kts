@@ -34,11 +34,16 @@ android {
 dependencies {
 
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    // Requirement B: adding Room persistence library
+
+    // Room Persistence Library
     val room_version = "2.6.0"
     implementation("androidx.room:room-runtime:$room_version")
     annotationProcessor("androidx.room:room-compiler:$room_version")
     implementation("androidx.room:room-rxjava3:$room_version")
+
+    // AndroidX Fragment Library
+    val fragment_version = "1.6.2"
+    implementation("androidx.fragment:fragment:$fragment_version")
 
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.10.0")
