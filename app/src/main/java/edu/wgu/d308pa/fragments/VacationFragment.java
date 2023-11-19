@@ -10,8 +10,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
-import java.util.List;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.List;
 import edu.wgu.d308pa.R;
 import edu.wgu.d308pa.adapters.RecycleViewAdapter;
 import edu.wgu.d308pa.dao.VacationDao;
@@ -30,21 +31,41 @@ public class VacationFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+
+        // passing data from activity demo
         int someInt = requireArguments().getInt("some_int"); // getting sample int from the bundle
 
+        // DB setup stuff
         context = getActivity();
         assert context != null; // TODO: figure out how to handle null context
         // TODO: figure out how to handle this without the main thread.
         appDatabase = Room.databaseBuilder(context, AppDatabase.class, "db").allowMainThreadQueries().build();
         vacationDao = appDatabase.vacationDao();
 
+        // populate some data
         populateSampleDataToDb();
 
+        // recycler view setup
         RecyclerView recyclerView = view.findViewById(R.id.vacation_recycler_view);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getContext());
         RecycleViewAdapter recycleViewAdapter = new RecycleViewAdapter(getDataForVacationRecyclerView());
         recyclerView.setAdapter(recycleViewAdapter);
         recyclerView.setLayoutManager(layoutManager);
+
+        // fab listener
+        FloatingActionButton floatingActionButton = view.findViewById(R.id.floatingActionButton);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getParentFragmentManager()
+                        .beginTransaction()
+                        .setReorderingAllowed(true)
+                        // sets the fragment to display programmatically
+                        .replace(R.id.fragmentContainerView, AddVacationFragment.class, null)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
     }
 
     public void populateSampleDataToDb() {
