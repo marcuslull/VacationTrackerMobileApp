@@ -1,22 +1,17 @@
 package edu.wgu.d308pa.adapters;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import edu.wgu.d308pa.R;
-import edu.wgu.d308pa.fragments.AddEditVacationFragment;
 import edu.wgu.d308pa.fragments.VacationDetailsFragment;
 import edu.wgu.d308pa.fragments.VacationFragment;
 
@@ -65,7 +60,6 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         Map.Entry<Long, String> entry = entryList.get(position);
         String buttonText = entry.getKey() + ": " + entry.getValue();
         holder.getTextView().setText(buttonText);
-
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override

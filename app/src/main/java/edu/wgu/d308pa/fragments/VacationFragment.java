@@ -1,20 +1,16 @@
 package edu.wgu.d308pa.fragments;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +24,7 @@ public class VacationFragment extends Fragment {
 
     Context context;
     AppDatabase appDatabase;
-    VacationDao vacationDao;
+    public static VacationDao vacationDao;
 
     public static Long VacationIdFromLongClick;
 
@@ -97,7 +93,7 @@ public class VacationFragment extends Fragment {
             return true;
         }
         else if (item.getItemId() == R.id.delete_menu_item) {
-            //TODO: implement delete
+            new DeleteAlertDialogFragment().show(getParentFragmentManager(), null);
             return true;
         }
         return super.onContextItemSelected(item);
@@ -118,7 +114,7 @@ public class VacationFragment extends Fragment {
     }
 
     // recycler view data population
-    public Map<Long, String> getDataForVacationRecyclerView() {
+    public static Map<Long, String> getDataForVacationRecyclerView() {
         List<Vacation> vacations = vacationDao.getAll();
         Map<Long, String> strings = new HashMap<>();
         vacations.forEach(vacation -> {
