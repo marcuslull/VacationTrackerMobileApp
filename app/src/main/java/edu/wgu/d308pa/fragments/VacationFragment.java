@@ -30,6 +30,8 @@ public class VacationFragment extends Fragment {
     AppDatabase appDatabase;
     VacationDao vacationDao;
 
+    public static Long VacationIdFromLongClick;
+
     public VacationFragment() {
         super(R.layout.vacation_fragment);
     }
@@ -53,7 +55,7 @@ public class VacationFragment extends Fragment {
         // recycler view setup
         RecyclerView recyclerView = view.findViewById(R.id.vacation_recycler_view);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getContext());
-        RecycleViewAdapter recycleViewAdapter = new RecycleViewAdapter(getDataForVacationRecyclerView());
+        RecycleViewAdapter recycleViewAdapter = new RecycleViewAdapter(getDataForVacationRecyclerView(), getParentFragmentManager());
         recyclerView.setAdapter(recycleViewAdapter);
         recyclerView.setLayoutManager(layoutManager);
 
@@ -68,15 +70,14 @@ public class VacationFragment extends Fragment {
                 getParentFragmentManager()
                         .beginTransaction()
                         .setReorderingAllowed(true)
-                        // sets the fragment to display programmatically
-                        .replace(R.id.fragmentContainerView, AddVacationFragment.class, null)
+                        .replace(R.id.fragmentContainerView, AddEditVacationFragment.class, null)
                         .addToBackStack(null)
                         .commit();
             }
         });
     }
 
-    // for the long press menu
+    // for the long press context menu
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
@@ -84,24 +85,25 @@ public class VacationFragment extends Fragment {
         inflater.inflate(R.menu.context_menu, menu);
     }
 
-    // for the long press menu
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        System.out.println(item.getItemId());
         if (item.getItemId() == R.id.edit_menu_item) {
-            //TODO: somehow get the vacation ID and edit it
-            System.out.println("edit clicked" + item.getItemId());
+            getParentFragmentManager()
+                    .beginTransaction()
+                    .setReorderingAllowed(true)
+                    .replace(R.id.fragmentContainerView, AddEditVacationFragment.class, null)
+                    .addToBackStack(null)
+                    .commit();
             return true;
         }
         else if (item.getItemId() == R.id.delete_menu_item) {
-            //TODO: somehow get the vacation ID and delete it
-            System.out.println("delete clicked" + item.getItemId());
+            //TODO: implement delete
             return true;
         }
-        System.out.println("hit the default");
         return super.onContextItemSelected(item);
     }
 
+    // database sample data
     public void populateSampleDataToDb() {
 
         Vacation testVacation1 = new Vacation();
@@ -113,10 +115,9 @@ public class VacationFragment extends Fragment {
         vacationDao.insert(testVacation2);
 
         Vacation retrievedVacation = vacationDao.findByName("Fiji vacation");
-        System.out.println(retrievedVacation.getVacationId());
     }
 
-    // for the recycler view
+    // recycler view data population
     public Map<Long, String> getDataForVacationRecyclerView() {
         List<Vacation> vacations = vacationDao.getAll();
         Map<Long, String> strings = new HashMap<>();

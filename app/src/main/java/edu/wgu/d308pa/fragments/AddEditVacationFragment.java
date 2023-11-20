@@ -8,14 +8,13 @@ import androidx.fragment.app.Fragment;
 
 import edu.wgu.d308pa.R;
 
-public class AddVacationFragment extends Fragment {
+public class AddEditVacationFragment extends Fragment {
 
-    public AddVacationFragment() {
-        super(R.layout.add_vacation_fragment);
+    public AddEditVacationFragment() {
+        super(R.layout.add_edit_vacation_fragment);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-
     }
 }
