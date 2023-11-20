@@ -2,6 +2,9 @@ package edu.wgu.d308pa.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -54,6 +57,9 @@ public class VacationFragment extends Fragment {
         recyclerView.setAdapter(recycleViewAdapter);
         recyclerView.setLayoutManager(layoutManager);
 
+        // for the long click menu
+        registerForContextMenu(recyclerView);
+
         // fab listener
         FloatingActionButton floatingActionButton = view.findViewById(R.id.floatingActionButton);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -70,6 +76,32 @@ public class VacationFragment extends Fragment {
         });
     }
 
+    // for the long press menu
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getActivity().getMenuInflater();
+        inflater.inflate(R.menu.context_menu, menu);
+    }
+
+    // for the long press menu
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        System.out.println(item.getItemId());
+        if (item.getItemId() == R.id.edit_menu_item) {
+            //TODO: somehow get the vacation ID and edit it
+            System.out.println("edit clicked" + item.getItemId());
+            return true;
+        }
+        else if (item.getItemId() == R.id.delete_menu_item) {
+            //TODO: somehow get the vacation ID and delete it
+            System.out.println("delete clicked" + item.getItemId());
+            return true;
+        }
+        System.out.println("hit the default");
+        return super.onContextItemSelected(item);
+    }
+
     public void populateSampleDataToDb() {
 
         Vacation testVacation1 = new Vacation();
@@ -84,6 +116,7 @@ public class VacationFragment extends Fragment {
         System.out.println(retrievedVacation.getVacationId());
     }
 
+    // for the recycler view
     public Map<Long, String> getDataForVacationRecyclerView() {
         List<Vacation> vacations = vacationDao.getAll();
         Map<Long, String> strings = new HashMap<>();
