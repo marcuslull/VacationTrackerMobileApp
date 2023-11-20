@@ -12,7 +12,9 @@ import androidx.room.Room;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import edu.wgu.d308pa.R;
 import edu.wgu.d308pa.adapters.RecycleViewAdapter;
 import edu.wgu.d308pa.dao.VacationDao;
@@ -82,12 +84,12 @@ public class VacationFragment extends Fragment {
         System.out.println(retrievedVacation.getVacationId());
     }
 
-    public String[] getDataForVacationRecyclerView() {
+    public Map<Long, String> getDataForVacationRecyclerView() {
         List<Vacation> vacations = vacationDao.getAll();
-        String[] strings = new String[vacations.size()];
-        for (int i=0; i<vacations.size(); i++) {
-            strings[i] = vacations.get(i).getTitle();
-        }
+        Map<Long, String> strings = new HashMap<>();
+        vacations.forEach(vacation -> {
+            strings.put(vacation.getVacationId(), vacation.getTitle());
+        });
         return strings;
     }
 }
