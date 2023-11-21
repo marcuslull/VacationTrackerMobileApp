@@ -45,8 +45,8 @@ public class VacationFragment extends Fragment {
         appDatabase = Room.databaseBuilder(context, AppDatabase.class, "db").allowMainThreadQueries().build();
         vacationDao = appDatabase.vacationDao();
 
-        // populate some data
-        populateSampleDataToDb();
+        // clean up the DB
+        //vacationDao.deleteAll(vacationDao.getAll());
 
         // recycler view setup
         RecyclerView recyclerView = view.findViewById(R.id.vacation_recycler_view);
@@ -84,6 +84,7 @@ public class VacationFragment extends Fragment {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.edit_menu_item) {
+            AddEditVacationFragment.fromEdit = true;
             getParentFragmentManager()
                     .beginTransaction()
                     .setReorderingAllowed(true)
@@ -97,20 +98,6 @@ public class VacationFragment extends Fragment {
             return true;
         }
         return super.onContextItemSelected(item);
-    }
-
-    // database sample data
-    public void populateSampleDataToDb() {
-
-        Vacation testVacation1 = new Vacation();
-        testVacation1.setTitle("Fiji vacation");
-        vacationDao.insert(testVacation1);
-
-        Vacation testVacation2 = new Vacation();
-        testVacation2.setTitle("Australia vacation");
-        vacationDao.insert(testVacation2);
-
-        Vacation retrievedVacation = vacationDao.findByName("Fiji vacation");
     }
 
     // recycler view data population

@@ -1,10 +1,6 @@
 package edu.wgu.d308pa;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
-import android.view.View;
-
 import edu.wgu.d308pa.fragments.VacationFragment;
 
 public class MainActivity extends AppCompatActivity {

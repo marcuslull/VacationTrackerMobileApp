@@ -33,6 +33,9 @@ public interface VacationDao {
     @Delete
     void delete(Vacation vacation);
 
+    @Delete
+    void deleteAll(List<Vacation> vacations);
+
     @Transaction
     @Query("SELECT * FROM vacation")
     List<VacationsWithExcursions> getVacationsWithExcursions();
