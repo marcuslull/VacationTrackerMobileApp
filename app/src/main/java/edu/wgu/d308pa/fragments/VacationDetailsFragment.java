@@ -1,6 +1,7 @@
 package edu.wgu.d308pa.fragments;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -20,6 +21,8 @@ public class VacationDetailsFragment extends Fragment {
     private TextView hotel;
     private TextView start;
     private TextView end;
+    private Button edit;
+    private Button delete;
 
 
     public VacationDetailsFragment() {
@@ -35,6 +38,8 @@ public class VacationDetailsFragment extends Fragment {
         hotel = view.findViewById(R.id.vacation_details_hotel_textview);
         start = view.findViewById(R.id.vacation_details_start_textview);
         end = view.findViewById(R.id.vacation_details_end_textview);
+        edit = view.findViewById(R.id.vacation_details_edit_button);
+        delete = view.findViewById(R.id.vacation_details_delete_button);
 
         //TODO: Refactor - duplicated code from add/edit vacation fragment
         retrievedVacation = vacationDao.findById(VacationFragment.VacationIdFromLongClick);
@@ -50,5 +55,26 @@ public class VacationDetailsFragment extends Fragment {
         SimpleDateFormat endFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date endDate = new Date(endLong);
         end.setText(endFormat.format(endDate));
+
+        edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AddEditVacationFragment.fromEdit = true;
+                getParentFragmentManager()
+                        .beginTransaction()
+                        .setReorderingAllowed(true)
+                        .replace(R.id.fragmentContainerView, AddEditVacationFragment.class, null)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
+
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DeleteAlertDialogFragment.fromDetails = true;
+                new DeleteAlertDialogFragment().show(getParentFragmentManager(), null);
+            }
+        });
     }
 }

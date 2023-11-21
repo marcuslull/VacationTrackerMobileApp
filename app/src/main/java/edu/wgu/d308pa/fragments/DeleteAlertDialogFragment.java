@@ -15,6 +15,9 @@ import edu.wgu.d308pa.adapters.RecycleViewAdapter;
 import edu.wgu.d308pa.entities.Excursion;
 
 public class DeleteAlertDialogFragment extends DialogFragment {
+
+    public static boolean fromDetails;
+
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -30,13 +33,18 @@ public class DeleteAlertDialogFragment extends DialogFragment {
                         List<Excursion> excursions = VacationFragment.excursionDao.getAllWithVacationId(vacationId);
                         if (excursions.size() == 0) {
                             VacationFragment.vacationDao.delete(VacationFragment.vacationDao.findById(vacationId));
-
-                            // refresh the recyclerview
-                            RecyclerView recyclerView = getActivity().findViewById(R.id.vacation_recycler_view);
-                            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
-                            RecycleViewAdapter recycleViewAdapter = new RecycleViewAdapter(getDataForVacationRecyclerView(), getParentFragmentManager());
-                            recyclerView.setAdapter(recycleViewAdapter);
-                            recyclerView.setLayoutManager(layoutManager);
+                            if (fromDetails) {
+                                fromDetails = false;
+                                getParentFragmentManager().popBackStack();
+                            }
+                            else {
+                                // refresh the recyclerview
+                                RecyclerView recyclerView = getActivity().findViewById(R.id.vacation_recycler_view);
+                                RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
+                                RecycleViewAdapter recycleViewAdapter = new RecycleViewAdapter(getDataForVacationRecyclerView(), getParentFragmentManager());
+                                recyclerView.setAdapter(recycleViewAdapter);
+                                recyclerView.setLayoutManager(layoutManager);
+                            }
                         }
                     }
                 })
