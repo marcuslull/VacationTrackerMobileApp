@@ -4,7 +4,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import java.text.ParseException;
@@ -18,13 +17,10 @@ public class AddEditVacationFragment extends Fragment {
 
     public static boolean fromEdit = false;
     private TextView textView;
-    private EditText title;
-    private EditText hotel;
-    private EditText start;
-    private EditText end;
+    private EditText title, hotel, start, end;
     private VacationDao vacationDao;
     private Button saveButton;
-    Vacation retrievedVacation;
+    private Vacation retrievedVacation, addedVacation;
 
     public AddEditVacationFragment() {
         super(R.layout.add_edit_vacation_fragment);
@@ -62,34 +58,107 @@ public class AddEditVacationFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                Vacation vacation = new Vacation();
-                vacation.setTitle(String.valueOf(title.getText()));
-                vacation.setHotel(String.valueOf(hotel.getText()));
+                if (validInput()) {
 
-                String startString = String.valueOf(start.getText());
-                SimpleDateFormat startFormat = new SimpleDateFormat("dd/MM/yyyy");
+                    addedVacation = new Vacation();
+                    addedVacation.setTitle(String.valueOf(title.getText()));
+                    addedVacation.setHotel(String.valueOf(hotel.getText()));
 
-                String endString = String.valueOf(end.getText());
-                SimpleDateFormat endFormat = new SimpleDateFormat("dd/MM/yyyy");
-                try {
-                    vacation.setStart(startFormat.parse(startString).getTime());
-                    vacation.setEnd(endFormat.parse(endString).getTime());
-                } catch (ParseException e) {
-                    throw new RuntimeException(e);
+                    String startString = String.valueOf(start.getText());
+                    SimpleDateFormat startFormat = new SimpleDateFormat("dd/MM/yyyy");
+                    String endString = String.valueOf(end.getText());
+                    SimpleDateFormat endFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+                    try {
+                        addedVacation.setStart(startFormat.parse(startString).getTime());
+                        addedVacation.setEnd(endFormat.parse(endString).getTime());
+                    }
+                    catch (ParseException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    if (fromEdit) {
+                        addedVacation.setVacationId(retrievedVacation.getVacationId());
+                        vacationDao.update(addedVacation);
+                        fromEdit = false;
+                    }
+                    else {
+                        vacationDao.insert(addedVacation);
+                    }
+
+                    // this pops the current fragment starting the next in line
+                    getParentFragmentManager().popBackStack();
                 }
-
-                if (fromEdit) {
-                    vacation.setVacationId(retrievedVacation.getVacationId());
-                    vacationDao.update(vacation);
-                    fromEdit = false;
-                }
-                else {
-                    vacationDao.insert(vacation);
-                }
-
-                // this pops the current fragment starting the next in line
-                getParentFragmentManager().popBackStack();
             }
         });
+    }
+
+    private boolean validInput() {
+        if (title.getText().length() == 0) {
+            title.setError("Please specify a vacation name");
+            return false;
+        }
+        if (hotel.getText().length() == 0) {
+            hotel.setError("Please specify a hotel name or destination");
+            return false;
+        }
+        if (start.getText().length() == 0) {
+            start.setError("Please set a start date");
+            return false;
+        }
+        if (end.getText().length() == 0) {
+            end.setError("Please set an end date");
+            return false;
+        }
+        if (!dateFormattedCorrectly(start)) {
+            start.setError("Use the format dd/mm/yyyy");
+            return false;
+        }
+        if (!dateFormattedCorrectly(end)) {
+            end.setError("Use the format dd/mm/yyyy");
+            return false;
+        }
+        if (!datesInCorrectOrder(start, end)) {
+            start.setError("Start date must be before end date");
+            end.setError("Start date must be before end date");
+            return false;
+        }
+        return true;
+    }
+
+    private boolean dateFormattedCorrectly(EditText date) {
+        try {
+            String string = String.valueOf(date.getText());
+            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+            format.parse(string);
+        }
+        catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean datesInCorrectOrder(EditText start, EditText end) {
+        //TODO: refactor all the repeated code.
+        String startString = String.valueOf(start.getText());
+        SimpleDateFormat startFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+        String endString = String.valueOf(end.getText());
+        SimpleDateFormat endFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+        Long startLong;
+        Long endLong;
+
+        try {
+            startLong = startFormat.parse(startString).getTime();
+            endLong = endFormat.parse(endString).getTime();
+            if (startLong < endLong ) {
+                return true;
+            }
+        }
+        catch (ParseException e) {
+            return false;
+        }
+        return false;
     }
 }
