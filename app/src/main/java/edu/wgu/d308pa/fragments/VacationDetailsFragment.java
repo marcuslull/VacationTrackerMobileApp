@@ -2,6 +2,8 @@ package edu.wgu.d308pa.fragments;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -17,13 +19,9 @@ public class VacationDetailsFragment extends Fragment {
     private VacationDao vacationDao;
     private ExcursionDao excursionDao;
     private Vacation retrievedVacation;
-    private TextView title;
-    private TextView hotel;
-    private TextView start;
-    private TextView end;
-    private Button edit;
-    private Button delete;
-
+    private TextView title, hotel, start, end;
+    private Button edit, delete;
+    private Switch notification;
 
     public VacationDetailsFragment() {
         super(R.layout.vacation_details_fragment);
@@ -40,6 +38,7 @@ public class VacationDetailsFragment extends Fragment {
         end = view.findViewById(R.id.vacation_details_end_textview);
         edit = view.findViewById(R.id.vacation_details_edit_button);
         delete = view.findViewById(R.id.vacation_details_delete_button);
+        notification = view.findViewById(R.id.vacation_details_notification_switch);
 
         //TODO: Refactor - duplicated code from add/edit vacation fragment
         retrievedVacation = vacationDao.findById(VacationFragment.VacationIdFromLongClick);
@@ -75,6 +74,11 @@ public class VacationDetailsFragment extends Fragment {
                 DeleteAlertDialogFragment.fromDetails = true;
                 new DeleteAlertDialogFragment().show(getParentFragmentManager(), null);
             }
+        });
+
+        notification.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {            }
         });
     }
 }
