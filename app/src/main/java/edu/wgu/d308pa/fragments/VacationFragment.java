@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import edu.wgu.d308pa.R;
 import edu.wgu.d308pa.adapters.RecycleViewAdapter;
+import edu.wgu.d308pa.dao.ExcursionDao;
 import edu.wgu.d308pa.dao.VacationDao;
 import edu.wgu.d308pa.entities.AppDatabase;
 import edu.wgu.d308pa.entities.Vacation;
@@ -25,7 +26,7 @@ public class VacationFragment extends Fragment {
     Context context;
     AppDatabase appDatabase;
     public static VacationDao vacationDao;
-
+    public static ExcursionDao excursionDao;
     public static Long VacationIdFromLongClick;
 
     public VacationFragment() {
@@ -44,6 +45,7 @@ public class VacationFragment extends Fragment {
         // TODO: figure out how to handle this without the main thread.
         appDatabase = Room.databaseBuilder(context, AppDatabase.class, "db").allowMainThreadQueries().build();
         vacationDao = appDatabase.vacationDao();
+        excursionDao = appDatabase.excursionDao();
 
         // clean up the DB
         //vacationDao.deleteAll(vacationDao.getAll());

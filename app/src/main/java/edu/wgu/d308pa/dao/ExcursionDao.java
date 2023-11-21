@@ -1,5 +1,4 @@
 package edu.wgu.d308pa.dao;
-
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -21,6 +20,9 @@ public interface ExcursionDao {
 
     @Query("SELECT * FROM excursion WHERE title LIKE :title LIMIT 1")
     Excursion findByTitle(String title);
+
+    @Query("SELECT * FROM excursion WHERE fkVacationId = :vacationId")
+    List<Excursion> getAllWithVacationId(Long vacationId);
 
     @Update
     void update(Excursion excursion);
