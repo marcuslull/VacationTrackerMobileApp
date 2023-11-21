@@ -3,6 +3,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import java.text.ParseException;
@@ -15,6 +17,7 @@ import edu.wgu.d308pa.entities.Vacation;
 public class AddEditVacationFragment extends Fragment {
 
     public static boolean fromEdit = false;
+    private TextView textView;
     private EditText title;
     private EditText hotel;
     private EditText start;
@@ -30,6 +33,7 @@ public class AddEditVacationFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
 
+        textView = view.findViewById(R.id.add_or_edit_title_textview);
         title = view.findViewById(R.id.add_or_edit_title_edittext);
         hotel = view.findViewById(R.id.add_or_edit_hotel_edittext);
         start = view.findViewById(R.id.add_or_edit_start_edittext);
@@ -39,6 +43,7 @@ public class AddEditVacationFragment extends Fragment {
 
         if (fromEdit) {
             retrievedVacation = vacationDao.findById(VacationFragment.VacationIdFromLongClick);
+            textView.setText("Edit your vacation");
             title.setText(retrievedVacation.getTitle());
             hotel.setText(retrievedVacation.getHotel());
 
