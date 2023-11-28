@@ -1,4 +1,5 @@
 package edu.wgu.d308pa.fragments;
+
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import edu.wgu.d308pa.R;
 import edu.wgu.d308pa.dao.ExcursionDao;
 import edu.wgu.d308pa.dao.VacationDao;
 import edu.wgu.d308pa.entities.Excursion;
+
 public class ExcursionFragment extends Fragment {
     VacationDao vacationDao;
     ExcursionDao excursionDao;
@@ -43,11 +45,6 @@ public class ExcursionFragment extends Fragment {
         addButton = view.findViewById(R.id.excursion_fragment_add_button);
         receivedBundle = getArguments();
 
-//        Excursion excursion1 = new Excursion();
-//        excursion1.setTitle("excursion");
-//        excursion1.setVacationId(307);
-//        excursionDao.insert(excursion1);
-
         // display a button for each associated excursion
         List<Excursion> excursions = excursionDao.getAllWithVacationId(receivedBundle.getLong("vacationId"));
         for (Excursion excursion : excursions) {
@@ -61,8 +58,10 @@ public class ExcursionFragment extends Fragment {
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Bundle bundle = receivedBundle;
                 fragmentManager = getParentFragmentManager();
                 addEditExcursionFragment = new AddEditExcursionFragment();
+                addEditExcursionFragment.setArguments(bundle);
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
                 transaction.replace(R.id.vacation_details_fragment_container_view, addEditExcursionFragment);
                 transaction.addToBackStack(null);
