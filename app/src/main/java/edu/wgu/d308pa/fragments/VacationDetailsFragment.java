@@ -13,6 +13,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentContainer;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -32,6 +35,9 @@ public class VacationDetailsFragment extends Fragment {
     private Switch notification;
     private int permissionRequestId = 1;
     private String friendlyStringStart, friendlyStringEnd;
+    FragmentManager fragmentManager;
+    Fragment excursionFragment;
+
 
     public VacationDetailsFragment() {
         super(R.layout.vacation_details_fragment);
@@ -67,6 +73,16 @@ public class VacationDetailsFragment extends Fragment {
         Date endDate = new Date(endLong);
         end.setText(endFormat.format(endDate));
         friendlyStringEnd = endFormat.format(endDate);
+
+        // adding the excursion fragment
+        Bundle bundle = new Bundle();
+        bundle.putLong("vacationId", retrievedVacation.getVacationId());
+        fragmentManager = getParentFragmentManager();
+        excursionFragment = new ExcursionFragment();
+        excursionFragment.setArguments(bundle);
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.add(R.id.vacation_details_fragment_container_view, excursionFragment);
+        transaction.commit();
 
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
