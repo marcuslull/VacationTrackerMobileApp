@@ -9,19 +9,21 @@ public class ScheduledAlarm {
     private Context context;
     private AlarmManager alarmManager;
     private PendingIntent pendingIntent;
+    private static int requestCode = 1000000;
 
     public ScheduledAlarm(Context context) {
         this.context = context;
         alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
     }
 
-    public void setAlarm(Calendar calendar) {
-        System.out.println("Hit set alarm");
+    public void setAlarm(Calendar calendar, String title, boolean start) {
         long triggerTime = calendar.getTimeInMillis();
-        System.out.println("Now: " + Calendar.getInstance().getTimeInMillis() + " Trigger: " + triggerTime);
         Intent intent = new Intent(context, AlarmReceiver.class);
-        pendingIntent = PendingIntent.getBroadcast(context, 1000001, intent, PendingIntent.FLAG_IMMUTABLE);
+        intent.putExtra("title", title);
+        intent.putExtra("start", String.valueOf(start));
+        pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_IMMUTABLE);
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent);
+        requestCode++;
     }
 
     public void cancelAlarm() {

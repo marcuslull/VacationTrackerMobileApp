@@ -1,6 +1,5 @@
 package edu.wgu.d308pa.fragments;
 import android.annotation.SuppressLint;
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -12,7 +11,6 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import java.text.SimpleDateFormat;
@@ -33,8 +31,6 @@ public class VacationDetailsFragment extends Fragment {
     private Button edit, delete;
     private Switch notification;
     private int permissionRequestId = 1;
-    NotificationCompat.Builder builder;
-    PendingIntent pendingIntent;
 
     public VacationDetailsFragment() {
         super(R.layout.vacation_details_fragment);
@@ -92,22 +88,16 @@ public class VacationDetailsFragment extends Fragment {
         notification.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
                 if (isChecked) {
                     if (ContextCompat.checkSelfPermission(getContext(),
                             "android.permission.POST_NOTIFICATIONS")
                             != PackageManager.PERMISSION_GRANTED){
                         // permission has not been granted yet
                         requestPermissions(new String[]{"android.permission.POST_NOTIFICATIONS"}, permissionRequestId);
-                        return;
+                        return; // Don't want this option to move on
                     }
                     // permission has been granted already
-                    System.out.println("permission has been granted already");
-                    ScheduledAlarm scheduledAlarm = new ScheduledAlarm(getContext());
-                    long fiveSecsFromNow = Calendar.getInstance().getTimeInMillis() + 5000;
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.setTimeInMillis(fiveSecsFromNow);
-                    scheduledAlarm.setAlarm(calendar);
+                    setAlarms();
                 }
             }
         });
@@ -120,27 +110,32 @@ public class VacationDetailsFragment extends Fragment {
         if (requestCode == permissionRequestId) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // this is the first time permission has been granted
-                System.out.println("this is the first time permission has been granted");
-                ScheduledAlarm scheduledAlarm = new ScheduledAlarm(getContext());
-                long fiveSecsFromNow = Calendar.getInstance().getTimeInMillis() + 5000;
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTimeInMillis(fiveSecsFromNow);
-                scheduledAlarm.setAlarm(calendar);
+                setAlarms();
             }
             else {
                 if (permissionRequestId > 1) {
                     // permission has been denied already, user must manually enable permission
-                    System.out.println("permission has been denied already, user must manually enable permission");
                     Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                     intent.setData(Uri.parse("package:" + getActivity().getPackageName()));
                     startActivity(intent);
                     notification.toggle();
                 }
                 // user denied permission
-                System.out.println("user denied permission");
                 permissionRequestId += 1;
                 notification.toggle();
             }
         }
+    }
+
+    public void setAlarms() {
+        Calendar startCalendar = Calendar.getInstance();
+        startCalendar.setTimeInMillis(retrievedVacation.getStart());
+        ScheduledAlarm startAlarm = new ScheduledAlarm(getContext());
+        startAlarm.setAlarm(startCalendar, retrievedVacation.getTitle(), true);
+
+        Calendar endCalendar = Calendar.getInstance();
+        endCalendar.setTimeInMillis(retrievedVacation.getEnd());
+        ScheduledAlarm endAlarm = new ScheduledAlarm(getContext());
+        endAlarm.setAlarm(endCalendar, retrievedVacation.getTitle(), false);
     }
 }

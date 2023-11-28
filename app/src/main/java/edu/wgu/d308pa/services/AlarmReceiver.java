@@ -6,21 +6,25 @@ import android.content.Context;
 import android.content.Intent;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import java.util.Objects;
 import edu.wgu.d308pa.R;
 
 public class AlarmReceiver extends BroadcastReceiver {
     @SuppressLint("MissingPermission")
     @Override
     public void onReceive(Context context, Intent intent) {
-        System.out.println("Hit onReceive");
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, "vacNot")
                 .setSmallIcon(R.drawable.beach)
-                .setContentTitle("Vacation Alarm")
-                .setContentText("Need to add vacation title and whether start or end")
+                .setContentTitle(intent.getStringExtra("title"))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        if (Objects.equals(intent.getStringExtra("Start"), "true")) {
+            notificationBuilder.setContentText("Your vacation will be starting soon!");
+        }
+        else { notificationBuilder.setContentText("Your vacation will be ending soon!"); }
 
         Notification notification = notificationBuilder.build();
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        notificationManager.notify(1000001, notification);
+        notificationManager.notify(99999, notification);
     }
 }
