@@ -28,9 +28,10 @@ public class VacationDetailsFragment extends Fragment {
     private ExcursionDao excursionDao;
     private Vacation retrievedVacation;
     private TextView title, hotel, start, end;
-    private Button edit, delete;
+    private Button edit, delete, share;
     private Switch notification;
     private int permissionRequestId = 1;
+    private String friendlyStringStart, friendlyStringEnd;
 
     public VacationDetailsFragment() {
         super(R.layout.vacation_details_fragment);
@@ -48,6 +49,7 @@ public class VacationDetailsFragment extends Fragment {
         edit = view.findViewById(R.id.vacation_details_edit_button);
         delete = view.findViewById(R.id.vacation_details_delete_button);
         notification = view.findViewById(R.id.vacation_details_notification_switch);
+        share = view.findViewById(R.id.vacation_details_share_button);
 
         //TODO: Refactor - duplicated code from add/edit vacation fragment
         retrievedVacation = vacationDao.findById(VacationFragment.VacationIdFromLongClick);
@@ -58,11 +60,13 @@ public class VacationDetailsFragment extends Fragment {
         SimpleDateFormat startFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date startDate = new Date(startLong);
         start.setText(startFormat.format(startDate));
+        friendlyStringStart = startFormat.format(startDate);
 
         Long endLong = retrievedVacation.getEnd();
         SimpleDateFormat endFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date endDate = new Date(endLong);
         end.setText(endFormat.format(endDate));
+        friendlyStringEnd = endFormat.format(endDate);
 
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,6 +86,24 @@ public class VacationDetailsFragment extends Fragment {
             public void onClick(View v) {
                 DeleteAlertDialogFragment.fromDetails = true;
                 new DeleteAlertDialogFragment().show(getParentFragmentManager(), null);
+            }
+        });
+
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String vacationDetails = "Check out my vacation details: " +
+                        retrievedVacation.getTitle() + "\nWe are staying at " +
+                        retrievedVacation.getHotel() + " starting " +
+                        friendlyStringStart + " ending " +
+                        friendlyStringEnd + ".";
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, vacationDetails);
+                sendIntent.setType("text/plain");
+
+                Intent shareIntent = Intent.createChooser(sendIntent, null);
+                startActivity(shareIntent);
             }
         });
 
