@@ -13,7 +13,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentContainer;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import java.text.SimpleDateFormat;
@@ -83,6 +82,9 @@ public class VacationDetailsFragment extends Fragment {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.add(R.id.vacation_details_fragment_container_view, excursionFragment);
         transaction.commit();
+
+        // set the static vacationId on deleteAlert so it knows what excursions to refresh after deletion
+        DeleteAlertDialogFragment.lastVacationId = retrievedVacation.getVacationId();
 
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
