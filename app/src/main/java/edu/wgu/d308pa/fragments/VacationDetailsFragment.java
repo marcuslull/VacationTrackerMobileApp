@@ -13,16 +13,16 @@ import android.widget.Switch;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
-import edu.wgu.d308pa.MainActivity;
 import edu.wgu.d308pa.R;
 import edu.wgu.d308pa.dao.ExcursionDao;
 import edu.wgu.d308pa.dao.VacationDao;
 import edu.wgu.d308pa.entities.Vacation;
+import edu.wgu.d308pa.services.ScheduledAlarm;
 
 public class VacationDetailsFragment extends Fragment {
 
@@ -68,23 +68,6 @@ public class VacationDetailsFragment extends Fragment {
         Date endDate = new Date(endLong);
         end.setText(endFormat.format(endDate));
 
-        // Intent for the vacation notification
-        Intent intent = new Intent(getContext(), MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        pendingIntent = PendingIntent.getActivity(getContext(), 0, intent, PendingIntent.FLAG_IMMUTABLE);
-
-        // set the notification
-        // TODO: Remove hardcode
-        builder = new NotificationCompat.Builder(getContext(), "vacNot")
-                .setSmallIcon(R.drawable.beach)
-                .setContentTitle("Vacation soon")
-                .setContentText("Your vacation is starting soon")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
-                .setContentIntent(pendingIntent)
-                .setAutoCancel(true);
-
-
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -120,8 +103,11 @@ public class VacationDetailsFragment extends Fragment {
                     }
                     // permission has been granted already
                     System.out.println("permission has been granted already");
-                    NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getContext());
-                    notificationManagerCompat.notify(permissionRequestId, builder.build());
+                    ScheduledAlarm scheduledAlarm = new ScheduledAlarm(getContext());
+                    long fiveSecsFromNow = Calendar.getInstance().getTimeInMillis() + 5000;
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTimeInMillis(fiveSecsFromNow);
+                    scheduledAlarm.setAlarm(calendar);
                 }
             }
         });
@@ -135,8 +121,11 @@ public class VacationDetailsFragment extends Fragment {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // this is the first time permission has been granted
                 System.out.println("this is the first time permission has been granted");
-                NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getContext());
-                notificationManagerCompat.notify(permissionRequestId, builder.build());
+                ScheduledAlarm scheduledAlarm = new ScheduledAlarm(getContext());
+                long fiveSecsFromNow = Calendar.getInstance().getTimeInMillis() + 5000;
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(fiveSecsFromNow);
+                scheduledAlarm.setAlarm(calendar);
             }
             else {
                 if (permissionRequestId > 1) {
