@@ -6,15 +6,19 @@ import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import edu.wgu.d308pa.R;
 import edu.wgu.d308pa.adapters.RecycleViewAdapter;
 import edu.wgu.d308pa.dao.ExcursionDao;
@@ -42,8 +46,6 @@ public class VacationFragment extends Fragment {
 
         // DB setup stuff
         context = getActivity();
-        assert context != null; // TODO: figure out how to handle null context
-        // TODO: figure out how to handle this without the main thread.
         appDatabase = Room.databaseBuilder(context, AppDatabase.class, "db").allowMainThreadQueries().build();
         vacationDao = appDatabase.vacationDao();
         excursionDao = appDatabase.excursionDao();

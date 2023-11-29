@@ -8,12 +8,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import androidx.fragment.app.Fragment;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+
 import java.util.List;
+
 import edu.wgu.d308pa.R;
 import edu.wgu.d308pa.dao.ExcursionDao;
 import edu.wgu.d308pa.dao.VacationDao;
@@ -57,7 +60,6 @@ public class ExcursionFragment extends Fragment {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // TODO: duplicate button code in the context menu
                     Button button = (Button) v;
                     String[] splitTitle = String.valueOf(button.getText()).split(" ");
                     Bundle bundle = new Bundle();

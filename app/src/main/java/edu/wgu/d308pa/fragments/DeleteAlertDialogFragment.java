@@ -2,9 +2,11 @@ package edu.wgu.d308pa.fragments;
 
 import static edu.wgu.d308pa.fragments.VacationFragment.excursionDao;
 import static edu.wgu.d308pa.fragments.VacationFragment.getDataForVacationRecyclerView;
+
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -13,7 +15,9 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.List;
+
 import edu.wgu.d308pa.R;
 import edu.wgu.d308pa.adapters.RecycleViewAdapter;
 import edu.wgu.d308pa.entities.Excursion;
@@ -49,7 +53,7 @@ public class DeleteAlertDialogFragment extends DialogFragment {
 
                         FragmentManager fragmentManager = getParentFragmentManager();
                         if (isFromExcursionDetails){
-                            // resolves a viewstack issue coming from the excursion details frag
+                            // resolves a view stack issue coming from the excursion details frag
                             fragmentManager.popBackStack();
                         }
 

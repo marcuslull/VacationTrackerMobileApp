@@ -1,29 +1,30 @@
 package edu.wgu.d308pa.adapters;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import edu.wgu.d308pa.R;
 import edu.wgu.d308pa.fragments.VacationDetailsFragment;
 import edu.wgu.d308pa.fragments.VacationFragment;
 
+// info here: https://developer.android.com/develop/ui/views/layout/recyclerview
+
 public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.ViewHolder> {
 
-    // info here: https://developer.android.com/develop/ui/views/layout/recyclerview
-
     private Map<Long, String> localDataMap = new HashMap<>();
-
-    // TODO: Resolve this static field
     private static Button button;
-
     private FragmentManager fragmentManager;
 
     public static class ViewHolder extends RecyclerView.ViewHolder{

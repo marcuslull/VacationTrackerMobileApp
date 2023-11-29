@@ -1,14 +1,18 @@
 package edu.wgu.d308pa.fragments;
+
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 import edu.wgu.d308pa.R;
 import edu.wgu.d308pa.dao.VacationDao;
 import edu.wgu.d308pa.entities.Vacation;
@@ -139,7 +143,6 @@ public class AddEditVacationFragment extends Fragment {
     }
 
     private boolean datesInCorrectOrder(EditText start, EditText end) {
-        //TODO: refactor all the repeated code.
         String startString = String.valueOf(start.getText());
         SimpleDateFormat startFormat = new SimpleDateFormat("dd/MM/yyyy");
 

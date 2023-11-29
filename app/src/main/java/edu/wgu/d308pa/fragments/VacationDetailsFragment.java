@@ -11,14 +11,17 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+
 import edu.wgu.d308pa.R;
 import edu.wgu.d308pa.dao.ExcursionDao;
 import edu.wgu.d308pa.dao.VacationDao;
@@ -57,7 +60,6 @@ public class VacationDetailsFragment extends Fragment {
         notification = view.findViewById(R.id.vacation_details_notification_switch);
         share = view.findViewById(R.id.vacation_details_share_button);
 
-        //TODO: Refactor - duplicated code from add/edit vacation fragment
         retrievedVacation = vacationDao.findById(VacationFragment.VacationIdFromLongClick);
         title.setText(retrievedVacation.getTitle());
         hotel.setText(retrievedVacation.getHotel());

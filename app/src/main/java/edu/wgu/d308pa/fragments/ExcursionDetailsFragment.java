@@ -13,13 +13,16 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+
 import edu.wgu.d308pa.R;
 import edu.wgu.d308pa.dao.ExcursionDao;
 import edu.wgu.d308pa.entities.Excursion;
@@ -60,7 +63,6 @@ public class ExcursionDetailsFragment extends Fragment {
 
         // populate the fields
         title.setText(retrievedExcursion.getTitle());
-        // TODO: This date conversion code is repeated everywhere
         Long startLong = retrievedExcursion.getDate();
         SimpleDateFormat startFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date startDate = new Date(startLong);
