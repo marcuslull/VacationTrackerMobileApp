@@ -19,7 +19,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
         if (Objects.equals(intent.getStringExtra("Start"), "true")) {
-            notificationBuilder.setContentText("Your vacation will be starting soon!");
+            notificationBuilder.setContentText("Your vacation or excursion will be starting soon!");
         }
         else { notificationBuilder.setContentText("Your vacation will be ending soon!"); }
 
