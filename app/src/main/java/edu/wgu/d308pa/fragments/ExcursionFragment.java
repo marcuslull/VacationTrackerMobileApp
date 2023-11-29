@@ -25,6 +25,7 @@ public class ExcursionFragment extends Fragment {
     Button addButton;
     FragmentManager fragmentManager;
     Fragment addEditExcursionFragment;
+    Fragment detailsExcursionFragment;
     Bundle receivedBundle;
     public static long excursionId;
     public static long lastVacationId;
@@ -53,6 +54,23 @@ public class ExcursionFragment extends Fragment {
             registerForContextMenu(button); // for the long press menu
             ViewGroup fragmentLayout = getView().findViewById(R.id.excursion_fragment_layout_linearlayout);
             fragmentLayout.addView(button);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // TODO: duplicate button code in the context menu
+                    Button button = (Button) v;
+                    String[] splitTitle = String.valueOf(button.getText()).split(" ");
+                    Bundle bundle = new Bundle();
+                    bundle.putLong("excursionId", Long.parseLong(splitTitle[0]));
+                    fragmentManager = getParentFragmentManager();
+                    detailsExcursionFragment = new ExcursionDetailsFragment();
+                    detailsExcursionFragment.setArguments(bundle);
+                    FragmentTransaction transaction = fragmentManager.beginTransaction();
+                    transaction.replace(R.id.vacation_details_fragment_container_view, detailsExcursionFragment);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                }
+            });
         }
 
         addButton.setOnClickListener(new View.OnClickListener() {
