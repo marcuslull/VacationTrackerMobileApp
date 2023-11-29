@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,6 +21,8 @@ public class ExcursionDetailsFragment extends Fragment {
     ExcursionDao excursionDao;
     Excursion retrievedExcursion;
     TextView title, start;
+    Button edit, share, delete;
+    Fragment addEditFragment;
 
     @Nullable
     @Override
@@ -33,15 +36,52 @@ public class ExcursionDetailsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
 
+        // get all the resources
         receivedBundle = getArguments();
         retrievedExcursion = excursionDao.findById(receivedBundle.getLong("excursionId"));
         title = view.findViewById(R.id.excursion_details_title_textview);
         start = view.findViewById(R.id.excursion_details_start_textview);
+        edit = view.findViewById(R.id.excursion_details_edit_button);
+        share = view.findViewById(R.id.excursion_details_share_button);
+        delete = view.findViewById(R.id.excursion_details_delete_button);
+
+        // populate the fields
         title.setText(retrievedExcursion.getTitle());
         // TODO: This date conversion code is repeated everywhere
         Long startLong = retrievedExcursion.getDate();
         SimpleDateFormat startFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date startDate = new Date(startLong);
         start.setText(startFormat.format(startDate));
+
+        edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addEditFragment = new AddEditExcursionFragment();
+                addEditFragment.setArguments(receivedBundle);
+                AddEditExcursionFragment.isEdit = true;
+                getParentFragmentManager()
+                        .beginTransaction()
+                        .setReorderingAllowed(true)
+                        .replace(R.id.vacation_details_fragment_container_view, addEditFragment, null)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
+
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DeleteAlertDialogFragment.isFromExcursionDetails = true;
+                DeleteAlertDialogFragment.lastExcursionId = retrievedExcursion.excursionId;
+                new DeleteAlertDialogFragment().show(getParentFragmentManager(), null);
+            }
+        });
     }
 }

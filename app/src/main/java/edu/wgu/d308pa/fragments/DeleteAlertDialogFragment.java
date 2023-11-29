@@ -22,16 +22,20 @@ public class DeleteAlertDialogFragment extends DialogFragment {
 
     public static boolean fromDetails;
     public static boolean isFromExcursion;
+    public static boolean isFromExcursionDetails;
     public static long lastVacationId;
+    public static long lastExcursionId;
 
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+
         Long id;
         if (isFromExcursion) {
             id = ExcursionFragment.excursionId;
-        }
-        else {
+        } else if (isFromExcursionDetails) {
+            id = lastExcursionId;
+        } else {
             id = VacationFragment.VacationIdFromLongClick;
         }
 
@@ -41,13 +45,21 @@ public class DeleteAlertDialogFragment extends DialogFragment {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
 
-                    if (isFromExcursion) {
-                        // delete the excursion and refresh the fragment
+                    if (isFromExcursion || isFromExcursionDetails) {
+
+                        FragmentManager fragmentManager = getParentFragmentManager();
+                        if (isFromExcursionDetails){
+                            // resolves a viewstack issue coming from the excursion details frag
+                            fragmentManager.popBackStack();
+                        }
+
                         isFromExcursion = false;
+                        isFromExcursionDetails = false;
+
+                        // delete the excursion and refresh the fragment
                         excursionDao.delete(excursionDao.findById(id));
                         Bundle bundle = new Bundle();
                         bundle.putLong("vacationId", lastVacationId);
-                        FragmentManager fragmentManager = getParentFragmentManager();
                         ExcursionFragment excursionFragment = new ExcursionFragment();
                         excursionFragment.setArguments(bundle);
                         FragmentTransaction transaction = fragmentManager.beginTransaction();
