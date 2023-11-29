@@ -15,16 +15,20 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import edu.wgu.d308pa.R;
 import edu.wgu.d308pa.dao.ExcursionDao;
+import edu.wgu.d308pa.dao.VacationDao;
 import edu.wgu.d308pa.entities.Excursion;
+import edu.wgu.d308pa.entities.Vacation;
 
 public class AddEditExcursionFragment extends Fragment {
 
     Button saveButton;
     ExcursionDao excursionDao;
+    VacationDao vacationDao;
     TextView addEditTitle;
     EditText title, date;
     Bundle receivedBundle;
     Excursion retrievedExcursion;
+    Vacation retrievedVacation;
     public static boolean isEdit = false;
 
     @Nullable
@@ -38,12 +42,14 @@ public class AddEditExcursionFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
 
-        saveButton = view.findViewById(R.id.add_or_edit_excursion_save_button);
+        vacationDao = VacationFragment.vacationDao;
         excursionDao = VacationFragment.excursionDao;
+        saveButton = view.findViewById(R.id.add_or_edit_excursion_save_button);
         addEditTitle = view.findViewById(R.id.add_or_edit_excursion_title_textview);
         title = view.findViewById(R.id.add_or_edit_excursion_title_edittext);
         date = view.findViewById(R.id.add_or_edit_excursion_start_edittext);
         receivedBundle = getArguments();
+        retrievedVacation = vacationDao.findById(receivedBundle.getLong("vacationId"));
 
         if (isEdit) {
             retrievedExcursion = excursionDao.findById(receivedBundle.getLong("excursionId"));
@@ -57,31 +63,82 @@ public class AddEditExcursionFragment extends Fragment {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Excursion excursion = new Excursion();
-                excursion.setTitle(title.getText().toString());
-                String dateString = String.valueOf(date.getText());
-                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
-                try {
-                    excursion.setDate(dateFormat.parse(dateString).getTime());
-                }
-                catch (ParseException e) {
-                    throw new RuntimeException(e);
-                }
+                if (validInput()) {
+                    Excursion excursion = new Excursion();
+                    excursion.setTitle(title.getText().toString());
+                    String dateString = String.valueOf(date.getText());
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
-                if (isEdit) {
-                    excursion.setExcursionId(retrievedExcursion.getExcursionId());
-                    excursion.setVacationId(retrievedExcursion.getVacationId());
-                    excursionDao.update(excursion);
-                    isEdit = false;
-                }
-                else {
-                    excursion.setVacationId(receivedBundle.getLong("vacationId"));
-                    excursionDao.insert(excursion);
-                }
+                    try {
+                        excursion.setDate(dateFormat.parse(dateString).getTime());
+                    }
+                    catch (ParseException e) {
+                        throw new RuntimeException(e);
+                    }
 
-                getParentFragmentManager().popBackStack();
+                    if (isEdit) {
+                        excursion.setExcursionId(retrievedExcursion.getExcursionId());
+                        excursion.setVacationId(retrievedExcursion.getVacationId());
+                        excursionDao.update(excursion);
+                        isEdit = false;
+                    }
+                    else {
+                        excursion.setVacationId(receivedBundle.getLong("vacationId"));
+                        excursionDao.insert(excursion);
+                    }
+
+                    getParentFragmentManager().popBackStack();
+                }
             }
         });
     }
+
+    private boolean validInput() {
+        if (title.getText().length() == 0) {
+            title.setError("Please specify an excursion name");
+            return false;
+        }
+        if (date.getText().length() == 0) {
+            date.setError("Please set a start date");
+            return false;
+        }
+        if (!dateFormattedCorrectly(date)) {
+            date.setError("Use the format dd/mm/yyyy");
+            return false;
+        }
+        if (!dateWithinVacation(date, retrievedVacation.getStart(), retrievedVacation.getEnd())) {
+            date.setError("Date must fall within vacation dates");
+            return false;
+        }
+        return true;
+    }
+
+    private boolean dateFormattedCorrectly(EditText date) {
+        try {
+            String string = String.valueOf(date.getText());
+            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+            format.parse(string);
+        }
+        catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean dateWithinVacation(EditText excursionStart, long vacationStart, long vacationEnd) {
+        String startString = String.valueOf(excursionStart.getText());
+        SimpleDateFormat startFormat = new SimpleDateFormat("dd/MM/yyyy");
+        try {
+            long startLong = startFormat.parse(startString).getTime();
+            if (startLong > vacationStart && startLong < vacationEnd) {
+                return true;
+            }
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return false;
+    }
+
 }

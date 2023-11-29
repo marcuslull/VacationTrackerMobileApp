@@ -62,6 +62,7 @@ public class ExcursionFragment extends Fragment {
                     String[] splitTitle = String.valueOf(button.getText()).split(" ");
                     Bundle bundle = new Bundle();
                     bundle.putLong("excursionId", Long.parseLong(splitTitle[0]));
+                    bundle.putLong("vacationId", receivedBundle.getLong("vacationId"));
                     fragmentManager = getParentFragmentManager();
                     detailsExcursionFragment = new ExcursionDetailsFragment();
                     detailsExcursionFragment.setArguments(bundle);
@@ -107,6 +108,7 @@ public class ExcursionFragment extends Fragment {
             if (item.getItemId() == R.id.edit_menu_item) {
                 Bundle bundle = new Bundle();
                 bundle.putLong("excursionId", excursionId);
+                bundle.putLong("vacationId", receivedBundle.getLong("vacationId"));
                 Fragment addEditFragment = new AddEditExcursionFragment();
                 addEditFragment.setArguments(bundle);
                 getParentFragmentManager()
