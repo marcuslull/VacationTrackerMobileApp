@@ -1,4 +1,5 @@
 package edu.wgu.d308pa.fragments;
+
 import static edu.wgu.d308pa.fragments.VacationFragment.excursionDao;
 import static edu.wgu.d308pa.fragments.VacationFragment.getDataForVacationRecyclerView;
 import android.app.Dialog;
@@ -26,9 +27,6 @@ public class DeleteAlertDialogFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
         Long id;
         if (isFromExcursion) {
             id = ExcursionFragment.excursionId;
@@ -37,50 +35,54 @@ public class DeleteAlertDialogFragment extends DialogFragment {
             id = VacationFragment.VacationIdFromLongClick;
         }
 
-        builder.setMessage("Are you sure you want to delete: " + id)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage("Confirm delete id: " + id)
+            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
 
-                        if (isFromExcursion) {
-                            // delete the excursion and refresh the fragment
-                            excursionDao.delete(excursionDao.findById(id));
-                            Bundle bundle = new Bundle();
-                            bundle.putLong("vacationId", lastVacationId);
-                            FragmentManager fragmentManager = getParentFragmentManager();
-                            ExcursionFragment excursionFragment = new ExcursionFragment();
-                            excursionFragment.setArguments(bundle);
-                            FragmentTransaction transaction = fragmentManager.beginTransaction();
-                            transaction.replace(R.id.vacation_details_fragment_container_view, excursionFragment);
-                            transaction.commit();
-                            return;
+                    if (isFromExcursion) {
+                        // delete the excursion and refresh the fragment
+                        isFromExcursion = false;
+                        excursionDao.delete(excursionDao.findById(id));
+                        Bundle bundle = new Bundle();
+                        bundle.putLong("vacationId", lastVacationId);
+                        FragmentManager fragmentManager = getParentFragmentManager();
+                        ExcursionFragment excursionFragment = new ExcursionFragment();
+                        excursionFragment.setArguments(bundle);
+                        FragmentTransaction transaction = fragmentManager.beginTransaction();
+                        transaction.replace(R.id.vacation_details_fragment_container_view, excursionFragment);
+                        transaction.commit();
+                        return;
+                    }
+
+                    // check for attached excursions
+                    List<Excursion> excursions = excursionDao.getAllWithVacationId(id);
+                    if (excursions.size() == 0) {
+                        VacationFragment.vacationDao.delete(VacationFragment.vacationDao.findById(id));
+                        if (fromDetails) {
+                            fromDetails = false;
+                            getParentFragmentManager().popBackStack();
                         }
-
-                        // check for attached excursions
-                        List<Excursion> excursions = excursionDao.getAllWithVacationId(id);
-                        if (excursions.size() == 0) {
-                            VacationFragment.vacationDao.delete(VacationFragment.vacationDao.findById(id));
-                            if (fromDetails) {
-                                fromDetails = false;
-                                getParentFragmentManager().popBackStack();
-                            }
-                            else {
-                                // refresh the recyclerview
-                                RecyclerView recyclerView = getActivity().findViewById(R.id.vacation_recycler_view);
-                                RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
-                                RecycleViewAdapter recycleViewAdapter = new RecycleViewAdapter(getDataForVacationRecyclerView(), getParentFragmentManager());
-                                recyclerView.setAdapter(recycleViewAdapter);
-                                recyclerView.setLayoutManager(layoutManager);
-                            }
+                        else {
+                            // refresh the recyclerview
+                            RecyclerView recyclerView = getActivity().findViewById(R.id.vacation_recycler_view);
+                            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
+                            RecycleViewAdapter recycleViewAdapter = new RecycleViewAdapter(getDataForVacationRecyclerView(), getParentFragmentManager());
+                            recyclerView.setAdapter(recycleViewAdapter);
+                            recyclerView.setLayoutManager(layoutManager);
                         }
                     }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //do nothing
-                    }
-                });
+                }
+            })
+
+            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    //do nothing
+                }
+            });
+
         return builder.create();
     }
 }

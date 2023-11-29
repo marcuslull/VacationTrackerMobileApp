@@ -69,6 +69,8 @@ public class ExcursionFragment extends Fragment {
             }
         });
     }
+
+    public static boolean isExcursionMenu; // bugfix for single ContextMenu but multiple fragments
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
@@ -77,25 +79,36 @@ public class ExcursionFragment extends Fragment {
         excursionId = Long.parseLong(splitTitle[0]);
         MenuInflater inflater = getActivity().getMenuInflater();
         inflater.inflate(R.menu.context_menu, menu);
+        isExcursionMenu = true;
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-
-        if (item.getItemId() == R.id.edit_menu_item) {
-            getParentFragmentManager()
-                    .beginTransaction()
-                    .setReorderingAllowed(true)
-                    .replace(R.id.vacation_details_fragment_container_view, AddEditExcursionFragment.class, null)
-                    .addToBackStack(null)
-                    .commit();
-            return true;
+        if (isExcursionMenu) {
+            isExcursionMenu = false;
+            if (item.getItemId() == R.id.edit_menu_item) {
+                Bundle bundle = new Bundle();
+                bundle.putLong("excursionId", excursionId);
+                Fragment addEditFragment = new AddEditExcursionFragment();
+                addEditFragment.setArguments(bundle);
+                getParentFragmentManager()
+                        .beginTransaction()
+                        .setReorderingAllowed(true)
+                        .replace(R.id.vacation_details_fragment_container_view, addEditFragment, null)
+                        .addToBackStack(null)
+                        .commit();
+                AddEditExcursionFragment.isEdit = true;
+                return true;
+            }
+            else if (item.getItemId() == R.id.delete_menu_item) {
+                DeleteAlertDialogFragment.isFromExcursion = true;
+                new DeleteAlertDialogFragment().show(getParentFragmentManager(), null);
+                return true;
+            }
+            return super.onContextItemSelected(item);
         }
-        else if (item.getItemId() == R.id.delete_menu_item) {
-            DeleteAlertDialogFragment.isFromExcursion = true;
-            new DeleteAlertDialogFragment().show(getParentFragmentManager(), null);
-            return true;
+        else {
+            return super.onContextItemSelected(item);
         }
-        return super.onContextItemSelected(item);
     }
 }

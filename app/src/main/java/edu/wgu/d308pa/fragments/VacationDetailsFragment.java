@@ -1,4 +1,5 @@
 package edu.wgu.d308pa.fragments;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -80,7 +81,7 @@ public class VacationDetailsFragment extends Fragment {
         excursionFragment = new ExcursionFragment();
         excursionFragment.setArguments(bundle);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.add(R.id.vacation_details_fragment_container_view, excursionFragment);
+        transaction.replace(R.id.vacation_details_fragment_container_view, excursionFragment);
         transaction.commit();
 
         // set the static vacationId on deleteAlert so it knows what excursions to refresh after deletion

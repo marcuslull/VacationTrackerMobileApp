@@ -1,4 +1,5 @@
 package edu.wgu.d308pa.fragments;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -76,30 +77,39 @@ public class VacationFragment extends Fragment {
     }
 
     // for the long press context menu
+    public static boolean isVacationMenu; // bugfix for single ContextMenu but multiple fragments
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         MenuInflater inflater = getActivity().getMenuInflater();
         inflater.inflate(R.menu.context_menu, menu);
+        isVacationMenu = true;
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.edit_menu_item) {
-            AddEditVacationFragment.fromEdit = true;
-            getParentFragmentManager()
-                    .beginTransaction()
-                    .setReorderingAllowed(true)
-                    .replace(R.id.fragmentContainerView, AddEditVacationFragment.class, null)
-                    .addToBackStack(null)
-                    .commit();
-            return true;
+        if (isVacationMenu) {
+            isVacationMenu = false;
+            if (item.getItemId() == R.id.edit_menu_item) {
+                AddEditVacationFragment.fromEdit = true;
+                getParentFragmentManager()
+                        .beginTransaction()
+                        .setReorderingAllowed(true)
+                        .replace(R.id.fragmentContainerView, AddEditVacationFragment.class, null)
+                        .addToBackStack(null)
+                        .commit();
+                return true;
+            }
+            else if (item.getItemId() == R.id.delete_menu_item) {
+                DeleteAlertDialogFragment.isFromExcursion = false; // bugfix from an incomplete delete of excursion
+                new DeleteAlertDialogFragment().show(getParentFragmentManager(), null);
+                return true;
+            }
+            return super.onContextItemSelected(item);
         }
-        else if (item.getItemId() == R.id.delete_menu_item) {
-            new DeleteAlertDialogFragment().show(getParentFragmentManager(), null);
-            return true;
+        else {
+            return super.onContextItemSelected(item);
         }
-        return super.onContextItemSelected(item);
     }
 
     // recycler view data population
