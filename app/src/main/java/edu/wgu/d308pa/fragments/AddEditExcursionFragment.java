@@ -131,7 +131,7 @@ public class AddEditExcursionFragment extends Fragment {
         SimpleDateFormat startFormat = new SimpleDateFormat("dd/MM/yyyy");
         try {
             long startLong = startFormat.parse(startString).getTime();
-            if (startLong > vacationStart && startLong < vacationEnd) {
+            if (startLong >= vacationStart && startLong <= vacationEnd) {
                 return true;
             }
         }
