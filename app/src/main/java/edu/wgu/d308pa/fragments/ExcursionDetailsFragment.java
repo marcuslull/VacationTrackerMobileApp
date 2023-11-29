@@ -34,7 +34,7 @@ public class ExcursionDetailsFragment extends Fragment {
     ExcursionDao excursionDao;
     Excursion retrievedExcursion;
     TextView title, start;
-    Button edit, share, delete;
+    Button edit, delete;
     Fragment addEditFragment;
     Switch notification;
     private int permissionRequestId = 1;
@@ -57,7 +57,6 @@ public class ExcursionDetailsFragment extends Fragment {
         title = view.findViewById(R.id.excursion_details_title_textview);
         start = view.findViewById(R.id.excursion_details_start_textview);
         edit = view.findViewById(R.id.excursion_details_edit_button);
-        share = view.findViewById(R.id.excursion_details_share_button);
         delete = view.findViewById(R.id.excursion_details_delete_button);
         notification = view.findViewById(R.id.excursion_details_notification_switch);
 
@@ -80,13 +79,6 @@ public class ExcursionDetailsFragment extends Fragment {
                         .replace(R.id.vacation_details_fragment_container_view, addEditFragment, null)
                         .addToBackStack(null)
                         .commit();
-            }
-        });
-
-        share.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
             }
         });
 
