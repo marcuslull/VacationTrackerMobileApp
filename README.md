@@ -3,9 +3,9 @@
 ### Authored by Marcus Lull
 
 ## Vacation Tracker v.1.0
-Compile SDK: 34
-Target SDK: 33
-Minimum SDK 26
+Compile SDK: 34  
+Target SDK: 33  
+Minimum SDK 26  
 gitlab: https://gitlab.com/wgu-gitlab-environment/student-repos/mlull/d308-mobile-application-development-android/-/tree/working_branch?ref_type=heads
 
 ## About
