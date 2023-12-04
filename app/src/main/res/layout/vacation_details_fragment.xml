@@ -70,12 +70,22 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Switch
-        android:id="@+id/vacation_details_notification_switch"
+        android:id="@+id/vacation_details_start_notification_switch"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
-        android:layout_marginStart="142dp"
-        android:layout_marginTop="65dp"
-        android:text="Notifications"
+        android:layout_marginStart="70dp"
+        android:layout_marginTop="55dp"
+        android:text="Notifications:   Start"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Switch
+        android:id="@+id/vacation_details_end_notification_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginStart="250dp"
+        android:layout_marginTop="55dp"
+        android:text="End"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

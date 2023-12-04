@@ -35,7 +35,7 @@ public class VacationDetailsFragment extends Fragment {
     private Vacation retrievedVacation;
     private TextView title, hotel, start, end;
     private Button edit, delete, share;
-    private Switch notification;
+    private Switch startNotification, endNotification;
     private int permissionRequestId = 1;
     private String friendlyStringStart, friendlyStringEnd;
     FragmentManager fragmentManager;
@@ -57,7 +57,8 @@ public class VacationDetailsFragment extends Fragment {
         end = view.findViewById(R.id.vacation_details_end_textview);
         edit = view.findViewById(R.id.vacation_details_edit_button);
         delete = view.findViewById(R.id.vacation_details_delete_button);
-        notification = view.findViewById(R.id.vacation_details_notification_switch);
+        startNotification = view.findViewById(R.id.vacation_details_start_notification_switch);
+        endNotification = view.findViewById(R.id.vacation_details_end_notification_switch);
         share = view.findViewById(R.id.vacation_details_share_button);
 
         retrievedVacation = vacationDao.findById(VacationFragment.VacationIdFromLongClick);
@@ -128,7 +129,7 @@ public class VacationDetailsFragment extends Fragment {
             }
         });
 
-        notification.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        startNotification.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
@@ -140,7 +141,24 @@ public class VacationDetailsFragment extends Fragment {
                         return; // Don't want this option to move on
                     }
                     // permission has been granted already
-                    setAlarms();
+                    setAlarm();
+                }
+            }
+        });
+
+        endNotification.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    if (ContextCompat.checkSelfPermission(getContext(),
+                            "android.permission.POST_NOTIFICATIONS")
+                            != PackageManager.PERMISSION_GRANTED){
+                        // permission has not been granted yet
+                        requestPermissions(new String[]{"android.permission.POST_NOTIFICATIONS"}, permissionRequestId);
+                        return; // Don't want this option to move on
+                    }
+                    // permission has been granted already
+                    setAlarm();
                 }
             }
         });
@@ -153,7 +171,7 @@ public class VacationDetailsFragment extends Fragment {
         if (requestCode == permissionRequestId) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // this is the first time permission has been granted
-                setAlarms();
+                setAlarm();
             }
             else {
                 if (permissionRequestId > 1) {
@@ -161,24 +179,28 @@ public class VacationDetailsFragment extends Fragment {
                     Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                     intent.setData(Uri.parse("package:" + getActivity().getPackageName()));
                     startActivity(intent);
-                    notification.toggle();
+                    startNotification.toggle();
                 }
                 // user denied permission
                 permissionRequestId += 1;
-                notification.toggle();
+                startNotification.toggle();
             }
         }
     }
 
-    public void setAlarms() {
-        Calendar startCalendar = Calendar.getInstance();
-        startCalendar.setTimeInMillis(retrievedVacation.getStart());
-        ScheduledAlarm startAlarm = new ScheduledAlarm(getContext());
-        startAlarm.setAlarm(startCalendar, retrievedVacation.getTitle(), true);
+    public void setAlarm() {
+        if (startNotification.isChecked()) {
+            Calendar startCalendar = Calendar.getInstance();
+            startCalendar.setTimeInMillis(retrievedVacation.getStart());
+            ScheduledAlarm startAlarm = new ScheduledAlarm(getContext());
+            startAlarm.setAlarm(startCalendar, retrievedVacation.getTitle(), true);
+        }
 
-        Calendar endCalendar = Calendar.getInstance();
-        endCalendar.setTimeInMillis(retrievedVacation.getEnd());
-        ScheduledAlarm endAlarm = new ScheduledAlarm(getContext());
-        endAlarm.setAlarm(endCalendar, retrievedVacation.getTitle(), false);
+        if (endNotification.isChecked()) {
+            Calendar endCalendar = Calendar.getInstance();
+            endCalendar.setTimeInMillis(retrievedVacation.getEnd());
+            ScheduledAlarm endAlarm = new ScheduledAlarm(getContext());
+            endAlarm.setAlarm(endCalendar, retrievedVacation.getTitle(), false);
+        }
     }
 }
